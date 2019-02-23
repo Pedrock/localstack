@@ -417,8 +417,8 @@ class ProxyListenerS3(ProxyListener):
         if 's3.amazonaws.com' not in headers.get('host', ''):
             headers['host'] = 'localhost'
 
-        # check content md5 hash integrity
-        if 'Content-MD5' in headers:
+        # check content md5 hash integrity (ignoring copy object requests)
+        if 'Content-MD5' in headers and headers.get('x-amz-copy-source') is None:
             response = check_content_md5(data, headers)
             if response is not None:
                 return response
